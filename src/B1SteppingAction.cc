@@ -69,7 +69,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // if(volname == "Crystal")
   G4cout << "Vol: " << volume->GetName() << G4endl;
       
-  // if (volume != fScoringVolume) return;
+  if (volume != fScoringVolume) return;
   
 
   if(step->GetTrack()->GetDefinition()->GetParticleName() == "gamma"){
