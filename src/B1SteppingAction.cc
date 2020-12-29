@@ -61,92 +61,34 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     fScoringVolume = detectorConstruction->GetScoringVolume();   
   }
 
-  // get volume of the current step
   G4LogicalVolume* volume 
     = step->GetPreStepPoint()->GetTouchableHandle()
       ->GetVolume()->GetLogicalVolume();
+
+  auto volname = volume->GetName();
+  // if(volname == "Crystal")
+  G4cout << "Vol: " << volume->GetName() << G4endl;
       
-  // check if we are in scoring volume
-  if (volume != fScoringVolume) return;
+  // if (volume != fScoringVolume) return;
+  
 
-  ///
-  // collect energy deposited in this step
-  G4Track * track = step->GetTrack();
-  //Узнаем физический объем в котором находится частица
-  G4VPhysicalVolume* vel=track->GetVolume();
-  //Название физического объема в котором мы будем регистрировать
-  //частицы, он у нас будет играть роль чуствительного объема или
-  //детектора
-  G4String name="Crystal";
-  //Проверка условия, что частица находится в интересуещем нас объеме
   if(step->GetTrack()->GetDefinition()->GetParticleName() == "gamma"){
-    if(name==vel->GetName()){
       G4AnalysisManager* analysis = G4AnalysisManager::Instance();
-  //track->GetDynamicParticle()->GetParticleDefinition()->GetParticleName();
+
+      // auto particle_id = step->GetTrack()->GetDefinition()->GetParticleDefinitionID();
+      // auto xxx = step->GetTrack()->GetTrackID();
       auto energy = step->GetTotalEnergyDeposit();
-      // AnalysisManager->FillH1(0,energy);
+      auto pos = step->GetPreStepPoint()->GetPosition();
+
       analysis->FillNtupleDColumn(0, energy / CLHEP::eV);
-      analysis->AddNtupleRow();
-      /////
-  // // collect energy deposited in this step
-  // G4double edepStep = step->GetTotalEnergyDeposit();
-  // fEventAction->AddEdep(edepStep);  
-
-  // auto energy = step->GetTotalEnergyDeposit();
-
-  // G4AnalysisManager* analysis = G4AnalysisManager::Instance();
-  // analysis->FillNtupleDColumn(0, energy / CLHEP::eV);
-  // analysis->AddNtupleRow();
-}}}
+      analysis->FillNtupleSColumn(1, volname);
+      // analysis->FillNtupleDColumn(2, pos.getY()/CLHEP::cm);
+      // analysis->FillNtupleDColumn(3, pos.getZ()/CLHEP::cm);
+      // analysis->FillNtupleDColumn(1, xxx);
+      
+      analysis->AddNtupleRow(); 
+  }
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/////////////////////////////////
-// B1SteppingAction::B1SteppingAction(B1EventAction* eventAction)
-// : G4UserSteppingAction(),
-// fEventAction(eventAction),
-// fScoringVolume(0)
-// {}
-
-// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-// B1SteppingAction::~B1SteppingAction()
-// {}
-
-// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-// void B1SteppingAction::UserSteppingAction(const G4Step* step)
-// {
-// if (!fScoringVolume) {
-// const B1DetectorConstruction* detectorConstruction
-// = static_cast<const B1DetectorConstruction*>
-// (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-// fScoringVolume = detectorConstruction->GetScoringVolume();
-// }
-
-// // get volume of the current step
-// G4LogicalVolume* volume
-// = step->GetPreStepPoint()->GetTouchableHandle()
-// ->GetVolume()->GetLogicalVolume();
-
-// // check if we are in scoring volume
-// if (volume != fScoringVolume) return;
-
-// // collect energy deposited in this step
-// G4Track * track = step->GetTrack();
-// //Узнаем физический объем в котором находится частица
-// G4VPhysicalVolume* vel=track->GetVolume();
-// //Название физического объема в котором мы будем регистрировать
-// //частицы, он у нас будет играть роль чуствительного объема или
-// //детектора
-// G4String name="Detector";
-// //Проверка условия, что частица находится в интересуещем нас объеме
-// if(step->GetTrack()->GetDefinition()->GetParticleName() == "gamma" ){
-// if(name==vel->GetName()){
-// G4AnalysisManager* AnalysisManager = G4AnalysisManager::Instance();
-// //track->GetDynamicParticle()->GetParticleDefinition()->GetParticleName();
-// auto energy = track->GetDynamicParticle()->GetKineticEnergy();
-// AnalysisManager->FillH1(0,energy);
-// }
-// }
-// }

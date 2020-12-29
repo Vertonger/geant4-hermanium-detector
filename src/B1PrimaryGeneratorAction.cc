@@ -38,6 +38,7 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+#include "g4csv.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -55,8 +56,14 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
     = particleTable->FindParticle(particleName="gamma");
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,-1.));
-  // fParticleGun->SetParticleEnergy(1.0574*MeV);
-  fParticleGun->SetParticleEnergy(1*MeV);
+  
+  G4double x0 = 0;
+  G4double y0 = 0;
+  G4double z0 = 65.8*mm;
+  // G4double z0 = 0*mm;
+  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+
+  // fParticleGun->SetParticleEnergy(120*keV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -76,12 +83,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // In order to avoid dependence of PrimaryGeneratorAction
   // on DetectorConstruction class we get Envelope volume
   // from G4LogicalVolumeStore.
-  
-  G4double x0 = 0;
-  G4double y0 = 0;
-  G4double z0 = 64.8*mm;
-  // G4double z0 = 0*mm;
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+
 
   // G4double size = 0.8; 
   // G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
@@ -90,6 +92,8 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   
   // fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
+  // G4AnalysisManager::Instance()->Write();
+  // G4AnalysisManager::Instance()->CloseFile();
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 

@@ -79,9 +79,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   
   //крышка
   G4Tubs* cap_solid = new G4Tubs("Cap", 25.2 * mm, 26.2 * mm, 64.8 * mm, 0, CLHEP::twopi);
+  // G4Tubs* cap_solid = new G4Tubs("Cap", 12.6 * mm, 13.1 * mm, 32.4 * mm, 0, CLHEP::twopi);
   G4LogicalVolume* cap_logical = new G4LogicalVolume(cap_solid, alum, "Cap");
   G4VPhysicalVolume* cap_physical = new G4PVPlacement(
     nullptr,
+    // G4ThreeVector(0 * mm, 0 * mm, 32.4 * mm),
     G4ThreeVector(0 * mm, 0 * mm, 64.8 * mm),
     "Cap",
     cap_logical,
@@ -92,10 +94,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
   //крепление
   G4Tubs* fix_solid = new G4Tubs("Fixture", 24.2 * mm, 25.2 * mm, 52.8 * mm, 0, CLHEP::twopi);
+  // G4Tubs* fix_solid = new G4Tubs("Fixture", 12.1 * mm, 12.6 * mm, 26.1 * mm, 0, CLHEP::twopi);
   G4LogicalVolume* fix_logical = new G4LogicalVolume(fix_solid, alum, "Fixture");
   G4VPhysicalVolume* fix_physical = new G4PVPlacement(
     nullptr,
     G4ThreeVector(0 * mm, 0 * mm, 64.8 * mm),
+    // G4ThreeVector(0 * mm, 0 * mm, 32.4 * mm),
     "Fixture",
     fix_logical,
     world_physical,
@@ -103,21 +107,30 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
     0,
     false);
 
-  //мёртвый слой (толщина - 2 мм)
+  auto fix_position = G4ThreeVector(0 * mm, 0 * mm, 64.8 * mm);
+  auto dead_position = fix_position + G4ThreeVector(0 * mm, 0 * mm, -7.3 * mm);
+
+  // auto fix_position = G4ThreeVector(0 * mm, 0 * mm, 32.4 * mm);
+  // auto dead_position = fix_position + G4ThreeVector(0 * mm, 0 * mm, -3.65 * mm);
+
+  // мёртвый слой (толщина - 2 мм)
   G4Tubs* dead_solid = new G4Tubs("Dead", 0 * mm, 23.5 * mm, 45.5 * mm, 0, CLHEP::twopi);
+  // G4Tubs* dead_solid = new G4Tubs("Dead", 0 * mm, 11.75 * mm, 22.75 * mm, 0, CLHEP::twopi);
   G4LogicalVolume* dead_logical = new G4LogicalVolume(dead_solid, germ, "Dead");
   G4VPhysicalVolume* dead_physical = new G4PVPlacement(
     nullptr,
-    G4ThreeVector(0 * mm, 0 * mm, -7.3 * mm),
+    // G4ThreeVector(0 * mm, 0 * mm, -7.3 * mm),
+    dead_position,
     "Dead",
     dead_logical,
-    fix_physical,
+    world_physical,
     0,
     0,
     false);
 
   //кристалл
   G4Tubs* crystal_solid = new G4Tubs("Crystal", 0 * mm, 21.5 * mm, 43.5 * mm, 0, CLHEP::twopi);
+  // G4Tubs* crystal_solid = new G4Tubs("Crystal", 0 * mm, 10.75 * mm, 21.75 * mm, 0, CLHEP::twopi);
   G4LogicalVolume* crystal_logical = new G4LogicalVolume(crystal_solid, germ, "Crystal");
   G4VPhysicalVolume* crystal_physical = new G4PVPlacement(
     nullptr,
@@ -131,9 +144,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
   //борный слой
   G4Tubs* bor_solid = new G4Tubs("Bor", 0 * mm, 5 * mm, 35.5 * mm, 0, CLHEP::twopi);
+  // G4Tubs* bor_solid = new G4Tubs("Bor", 0 * mm, 2.5 * mm, 17.75 * mm, 0, CLHEP::twopi);
   G4LogicalVolume* bor_logical = new G4LogicalVolume(bor_solid, bor, "Bor");
   G4VPhysicalVolume* bor_physical = new G4PVPlacement(
     nullptr,
+    // G4ThreeVector(0 * mm, 0 * mm, 5.7*mm),
     G4ThreeVector(0 * mm, 0 * mm, 9.4 * mm),
     "Bor",
     bor_logical,
@@ -144,10 +159,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 
   //дырка
   G4Tubs* hole_solid = new G4Tubs("Hole", 0 * mm, 4.7 * mm, 34.8 * mm, 0, CLHEP::twopi);
+  // G4Tubs* hole_solid = new G4Tubs("Hole", 0 * mm, 2.35 * mm, 17.4 * mm, 0, CLHEP::twopi);
   G4LogicalVolume* hole_logical = new G4LogicalVolume(hole_solid, air, "Hole");
   G4VPhysicalVolume* hole_physical = 
   new G4PVPlacement(
     nullptr,
+    // G4ThreeVector(0 * mm, 0 * mm, 0.35*mm),
     G4ThreeVector(0 * mm, 0 * mm, 0.7*mm),
     "Hole",
     hole_logical,
@@ -155,122 +172,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
     0,
     0,
     false);
-  // auto world_solid = new G4Box("World", 20 * cm, 20 * cm, 20 * cm);
-  // auto world_logic = new G4LogicalVolume(world_solid, air, "World");
-  // auto world_physical = new G4PVPlacement(
-  //   nullptr,
-  //   G4ThreeVector(),
-  //   "World",
-  //   world_logic,
-  //   nullptr, //ссылка на физический объём
-  //   0,
-  //   0,
-  //   false);
-  
-  // //крышка
-  // auto cap_solid = new G4Tubs("Cap", 25.2 * mm, 26.2 * mm, 64.8 * mm, 0, CLHEP::twopi);
-  // auto cap_logical = new G4LogicalVolume(cap_solid, alum, "Cap");
-  // auto cap_physical = new G4PVPlacement(
-  //   nullptr,
-  //   G4ThreeVector(0 * mm, 0 * mm, 64.8 * mm),
-  //   "Cap",
-  //   cap_logical,
-  //   world_physical,
-  //   0,
-  //   0,
-  //   false);
-
-  // //крепление
-  // auto fix_solid = new G4Tubs("Fixture", 24.2 * mm, 25.2 * mm, 52.8 * mm, 0, CLHEP::twopi);
-  // auto fix_logical = new G4LogicalVolume(fix_solid, alum, "Fixture");
-  // auto fix_physical = new G4PVPlacement(
-  //   nullptr,
-  //   G4ThreeVector(0 * mm, 0 * mm, 64.8 * mm),
-  //   "Fixture",
-  //   fix_logical,
-  //   world_physical,
-  //   0,
-  //   0,
-  //   false);
-
-  // //мёртвый слой (толщина - 2 мм)
-  // auto dead_solid = new G4Tubs("Dead", 0 * mm, 23.5 * mm, 45.5 * mm, 0, CLHEP::twopi);
-  // auto dead_logical = new G4LogicalVolume(dead_solid, germ, "Dead");
-  // auto dead_physical = new G4PVPlacement(
-  //   nullptr,
-  //   G4ThreeVector(0 * mm, 0 * mm, -7.3 * mm),
-  //   "Dead",
-  //   dead_logical,
-  //   fix_physical,
-  //   0,
-  //   0,
-  //   false);
-
-  // //кристалл
-  // auto crystal_solid = new G4Tubs("Crystal", 0 * mm, 21.5 * mm, 43.5 * mm, 0, CLHEP::twopi);
-  // auto crystal_logical = new G4LogicalVolume(crystal_solid, germ, "Crystal");
-  // auto crystal_physical = new G4PVPlacement(
-  //   nullptr,
-  //   G4ThreeVector(),
-  //   "Crystal",
-  //   crystal_logical,
-  //   dead_physical,
-  //   0,
-  //   0,
-  //   false);
-
-  // //борный слой
-  // auto bor_solid = new G4Tubs("Bor", 0 * mm, 5 * mm, 35.5 * mm, 0, CLHEP::twopi);
-  // auto bor_logical = new G4LogicalVolume(bor_solid, bor, "Bor");
-  // auto bor_physical = new G4PVPlacement(
-  //   nullptr,
-  //   G4ThreeVector(0 * mm, 0 * mm, 9.4 * mm),
-  //   "Bor",
-  //   bor_logical,
-  //   crystal_physical,
-  //   0,
-  //   0,
-  //   false);
-
-  // //дырка
-  // auto hole_solid = new G4Tubs("Hole", 0 * mm, 4.7 * mm, 34.8 * mm, 0, CLHEP::twopi);
-  // auto hole_logical = new G4LogicalVolume(hole_solid, air, "Hole");
-  // G4VPhysicalVolume* hole_physical = 
-  // new G4PVPlacement(
-  //   nullptr,
-  //   G4ThreeVector(0 * mm, 0 * mm, 0.7*mm),
-  //   "Hole",
-  //   hole_logical,
-  //   bor_physical,
-  //   0,
-  //   0,
-  //   false);
-
-
-
+    
   fScoringVolume = crystal_logical;
   //
   //always return the physical World
   //
   return world_physical;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-// void B1DetectorConstruction::ConstructSDandField()
-// {
-//   // Объявление чувствительной области детектора, в которой можно получить подробную
-//   // информацию о состоянии и движении частицы
-//   // Назовем чувствительную область DetectorSD
-//   G4String trackerChamberSDname = "DetectorSD";
-//   // Создаем экземпляр чувствительной области
-//   G4DetectorSD* aTrackerSD = new ExG4DetectorSD(trackerChamberSDname);
-//   // Передаем указатель менеджеру
-//   G4SDManager::GetSDMpointer()->AddNewDetector(aTrackerSD);
-//   // Добавляем чувствительный объем ко всем логическим областям с
-//   // именем Detector
-//   SetSensitiveDetector("Crystal"), aTrackerSD, true);
-// }
-
-
-
