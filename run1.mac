@@ -1,0 +1,7 @@
+/run/initialize
+/gun/particle gamma
+/gun/direction 0 0 -1
+
+
+/gun/energy 160 keV
+/run/beamOn 2000
